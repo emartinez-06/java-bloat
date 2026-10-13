@@ -1,0 +1,116 @@
+{
+  "info": {
+    "name": "Video Game API",
+    "description": "Run the requests in order. Initialize reloads the CSV and replaces all existing rows in the in-memory H2 database. Create stores its returned ID for Update and Delete.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "gameId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Initialize from CSV",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/initialize",
+        "description": "Deletes existing games and imports 200 CSV rows."
+      },
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+            "pm.test('CSV loaded 200 games', () => pm.expect(pm.response.json()).to.have.lengthOf(200));"
+          ]
+        }
+      }]
+    },
+    {
+      "name": "2. Read top games",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/top_games?count=5",
+        "description": "Returns up to five games ordered by global sales descending."
+      },
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+            "pm.test('Five games returned', () => pm.expect(pm.response.json()).to.have.lengthOf(5));"
+          ]
+        }
+      }]
+    },
+    {
+      "name": "3. Create game",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rank\": 201,\n  \"name\": \"Postman Practice Game\",\n  \"platform\": \"PC\",\n  \"releaseYear\": 2025,\n  \"genre\": \"Action\",\n  \"publisher\": \"Practice Studio\",\n  \"naSales\": 1.0,\n  \"euSales\": 0.2,\n  \"jpSales\": 0.1,\n  \"otherSales\": 0.2,\n  \"globalSales\": 1.5\n}"
+        },
+        "url": "{{baseUrl}}/api/videogame",
+        "description": "Creates a valid game. The test script saves its generated ID in the collection variable gameId."
+      },
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+            "const game = pm.response.json();",
+            "pm.test('Game has a generated ID', () => pm.expect(game.id).to.be.a('number'));",
+            "if (game.id != null) pm.collectionVariables.set('gameId', game.id);"
+          ]
+        }
+      }]
+    },
+    {
+      "name": "4. Update created game",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rank\": 201,\n  \"name\": \"Updated Practice Game\",\n  \"platform\": \"PC\",\n  \"releaseYear\": 2025,\n  \"genre\": \"Adventure\",\n  \"publisher\": \"Practice Studio\",\n  \"naSales\": 1.0,\n  \"euSales\": 0.3,\n  \"jpSales\": 0.1,\n  \"otherSales\": 0.2,\n  \"globalSales\": 1.6\n}"
+        },
+        "url": "{{baseUrl}}/api/videogame/{{gameId}}",
+        "description": "Replaces the created game's data. Run Create first so gameId is set."
+      },
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+            "pm.test('Name changed and ID stayed the same', () => {",
+            "  const game = pm.response.json();",
+            "  pm.expect(game.name).to.eql('Updated Practice Game');",
+            "  pm.expect(String(game.id)).to.eql(pm.collectionVariables.get('gameId'));",
+            "});"
+          ]
+        }
+      }]
+    },
+    {
+      "name": "5. Delete created game",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/videogame/{{gameId}}",
+        "description": "Deletes the game created in step 3. Run Create first so gameId is set."
+      },
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test('Status is 204 with no body', () => {",
+            "  pm.response.to.have.status(204);",
+            "  pm.expect(pm.response.text()).to.eql('');",
+            "});"
+          ]
+        }
+      }]
+    }
+  ]
+}
