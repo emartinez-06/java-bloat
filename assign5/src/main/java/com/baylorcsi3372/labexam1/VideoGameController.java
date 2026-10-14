@@ -93,6 +93,11 @@ public class VideoGameController {
 
         videoGameRepository.deleteById(id);
         return ResponseEntity.noContent().build();
-    }   
+    }
+
+    @GetMapping("/videogame/search")
+    public List<VideoGame> searchVideoGames(@RequestParam String name){
+        return videoGameRepository.findByNameContainingIgnoreCase(name);
+    }
 }
 

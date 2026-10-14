@@ -9,4 +9,6 @@ public interface VideoGameRepository extends JpaRepository<VideoGame, Long> {
     // JPARepository gives us acces to findAll(), findById(), save(), deleteById(), and count()
     @Query("SELECT v FROM VideoGame v ORDER BY v.globalSales DESC")
     List<VideoGame> sortGlobalSales();
+
+    List<VideoGame> findByNameContainingIgnoreCase(String name);
 }
