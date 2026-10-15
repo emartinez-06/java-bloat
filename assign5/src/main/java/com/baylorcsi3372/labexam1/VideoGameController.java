@@ -54,12 +54,6 @@ public class VideoGameController {
         return videoGameRepository.saveAll(videoGames);
     }
 
-    @PostMapping("/videogame")
-    public VideoGame createVideoGame(@Valid @RequestBody VideoGame vg) {
-        VideoGame videoGame = videoGameRepository.save(vg);
-        return videoGame;
-    }
-
     @GetMapping("/top_games")
     public List<VideoGame> getTopGames(@RequestParam("count") Integer number) {
         List<VideoGame> sortedGames= videoGameRepository.sortGlobalSales();
@@ -86,18 +80,24 @@ public class VideoGameController {
     }
 
     @DeleteMapping("/videogame/{id}")
-    public ResponseEntity<Void> deleteVideoGame(@PathVariable Long id){
-        if(!videoGameRepository.existsById(id)){
+    public ResponseEntity<VideoGame> deleteVideoGame(@PathVariable Long id){
+        VideoGame existing = videoGameRepository.findById(id).orElse(null);
+        if(existing == null){
             return ResponseEntity.notFound().build();
         }
 
         videoGameRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(existing);
     }
 
     @GetMapping("/videogame/search")
     public List<VideoGame> searchVideoGames(@RequestParam String name){
         return videoGameRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    @GetMapping("/sales_by_genre")
+    public List<GenreStats> salesByGenre(){
+        return videoGameRepository.findSalesByGenre();
     }
 }
 

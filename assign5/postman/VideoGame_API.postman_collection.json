@@ -98,15 +98,46 @@
       "request": {
         "method": "DELETE",
         "url": "{{baseUrl}}/api/videogame/{{gameId}}",
-        "description": "Deletes the game created in step 3. Run Create first so gameId is set."
+        "description": "Deletes and returns the game created in step 3. Run Create first so gameId is set."
       },
       "event": [{
         "listen": "test",
         "script": {
           "exec": [
-            "pm.test('Status is 204 with no body', () => {",
-            "  pm.response.to.have.status(204);",
-            "  pm.expect(pm.response.text()).to.eql('');",
+            "pm.test('Status is 200 with the deleted game', () => {",
+            "  pm.response.to.have.status(200);",
+            "  const game = pm.response.json();",
+            "  pm.expect(String(game.id)).to.eql(pm.collectionVariables.get('gameId'));",
+            "  pm.expect(game.name).to.eql('Updated Practice Game');",
+            "});"
+          ]
+        }
+      }]
+    },
+    {
+      "name": "6. Average global sales by genre",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/sales_by_genre",
+        "description": "Returns each present genre with its game count and average global sales, sorted by average descending and genre ascending for ties."
+      },
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+            "pm.test('Genre statistics have the expected shape and order', () => {",
+            "  const stats = pm.response.json();",
+            "  pm.expect(stats).to.be.an('array');",
+            "  stats.forEach((row, index) => {",
+            "    pm.expect(row).to.have.all.keys('genre', 'gameCount', 'averageGlobalSales');",
+            "    pm.expect(row.gameCount).to.be.above(0);",
+            "    if (index > 0) {",
+            "      const previous = stats[index - 1];",
+            "      pm.expect(previous.averageGlobalSales).to.be.at.least(row.averageGlobalSales);",
+            "      if (previous.averageGlobalSales === row.averageGlobalSales) pm.expect(previous.genre <= row.genre).to.be.true;",
+            "    }",
+            "  });",
             "});"
           ]
         }
