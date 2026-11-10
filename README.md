@@ -1,27 +1,29 @@
-# Assignment 8 workspace
+# java-bloat
 
-The root project is `exam_two_backend`, a Spring Boot backend using Java 25 and an in-memory H2 database.
-The reusable VideoGame entity, repository, CSV dataset, and existing initialize, search, and top-games endpoints are retained from the previous project.
-Their behavior has not been updated for Assignment 8.
+This repository contains both lab exam projects:
 
-## Run
+- `lab1exam/`: the original Lab Exam 1 folder, including its `assign5/` backend and local changes.
+- `lab2exam/`: the cleaned Assignment 8 / Lab Exam 2 backend starter.
 
-Install Java 25, then run:
+## Run Lab Exam 2
+
+With Java 25 installed, run from the repository root:
 
 ```sh
 ./dev.sh
 ```
 
-The backend runs at `http://localhost:8080`.
-Stop it with Ctrl+C.
-The database starts empty and is cleared on restart.
-The existing `GET /api/initialize` endpoint can load the CSV manually.
+You can also run `./dev.sh` from inside `lab2exam/`.
+This starts only the Spring Boot API at `http://localhost:8080`.
+No frontend or new Assignment 8 features have been implemented.
 
-## Checks
+## Run Lab Exam 1
+
+The original VideoGame backend is inside `lab1exam/assign5/`:
 
 ```sh
-./gradlew test
+cd lab1exam/assign5
+./gradlew bootRun
 ```
 
-No frontend or new Assignment 8 features have been implemented.
-The frontend and required API changes are left for you to build.
+Both backends default to port 8080, so run one at a time.
