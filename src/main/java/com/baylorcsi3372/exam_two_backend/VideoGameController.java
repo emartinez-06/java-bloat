@@ -1,9 +1,5 @@
-package com.baylorcsi3372.labexam1;
+package com.baylorcsi3372.exam_two_backend;
 
-import jakarta.persistence.Entity;
-import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
@@ -66,38 +62,9 @@ public class VideoGameController {
         return topGames;
     }
 
-    @PutMapping("/videogame/{id}")
-    public ResponseEntity<VideoGame> updateVideoGame(
-        @PathVariable Long id,
-        @Valid @RequestBody VideoGame changes){
-        VideoGame existing = videoGameRepository.findById(id).orElse(null);
-
-        if(existing == null){
-            return ResponseEntity.notFound().build();
-        }
-        existing.updateForm(changes);
-        return ResponseEntity.ok(videoGameRepository.save(existing));
-    }
-
-    @DeleteMapping("/videogame/{id}")
-    public ResponseEntity<VideoGame> deleteVideoGame(@PathVariable Long id){
-        VideoGame existing = videoGameRepository.findById(id).orElse(null);
-        if(existing == null){
-            return ResponseEntity.notFound().build();
-        }
-
-        videoGameRepository.deleteById(id);
-        return ResponseEntity.ok(existing);
-    }
-
     @GetMapping("/videogame/search")
     public List<VideoGame> searchVideoGames(@RequestParam String name){
         return videoGameRepository.findByNameContainingIgnoreCase(name);
     }
 
-    @GetMapping("/sales_by_genre")
-    public List<GenreStats> salesByGenre(){
-        return videoGameRepository.findSalesByGenre();
-    }
 }
-

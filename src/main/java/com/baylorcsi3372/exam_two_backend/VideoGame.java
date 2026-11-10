@@ -1,13 +1,11 @@
-package com.baylorcsi3372.labexam1;
+package com.baylorcsi3372.exam_two_backend;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.*;
 import jakarta.validation.constraints.*;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Entity
 @Table(name = "video_game")
@@ -69,20 +67,6 @@ public class VideoGame {
         this.jpSales = jpSales;
         this.otherSales = otherSales;
         this.globalSales = globalSales;
-    }
-
-    public void updateForm(VideoGame changes){
-        this.rank = changes.rank;
-        this.name = changes.name;
-        this.platform = changes.platform;
-        this.releaseYear = changes.releaseYear;
-        this.genre = changes.genre;
-        this.publisher = changes.publisher;
-        this.naSales = changes.naSales;
-        this.euSales = changes.euSales;
-        this.jpSales = changes.jpSales;
-        this.otherSales = changes.otherSales;
-        this.globalSales = changes.globalSales;
     }
 
     public Long getId() {

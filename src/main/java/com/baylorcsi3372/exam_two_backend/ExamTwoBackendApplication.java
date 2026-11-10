@@ -1,13 +1,13 @@
-package com.baylorcsi3372.labexam1;
+package com.baylorcsi3372.exam_two_backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Labexam1Application {
+public class ExamTwoBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Labexam1Application.class, args);
+		SpringApplication.run(ExamTwoBackendApplication.class, args);
 	}
 
 }
