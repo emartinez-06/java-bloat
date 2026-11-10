@@ -63,8 +63,17 @@ public class VideoGameController {
     }
 
     @GetMapping("/videogame/search")
-    public List<VideoGame> searchVideoGames(@RequestParam String name){
-        return videoGameRepository.findByNameContainingIgnoreCase(name);
+    public List<VideoGameRepository.ConciseGame> searchVideoGames(@RequestParam String name){
+        List<VideoGameRepository.ConciseGame> filteredGames;
+
+        // returns onlt the id and name of each mathcing object
+        filteredGames = videoGameRepository.findByNameContainingIgnoreCase(name).stream()
+        .map(game -> new VideoGameRepository.ConciseGame(game.getId(), game.getName()))
+        .toList();
+
+        // sorts by name ASC 
+
+        return filteredGames;
     }
 
 }
