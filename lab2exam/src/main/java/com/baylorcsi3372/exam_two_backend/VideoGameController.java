@@ -9,6 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -75,6 +78,36 @@ public class VideoGameController {
         // sorts by name ASC 
 
         return filteredGames;
+    }
+
+
+    @PostMapping("/api/videogame")
+    public VideoGame createGame(@Valid @RequestBody VideoGame payload){
+        VideoGame createdGame = new VideoGame(
+            payload.getRank(),
+            payload.getName(),
+            payload.getPlatform(),
+            payload.getReleaseYear(),
+            payload.getGenre(),
+            payload.getPublisher(),
+            payload.getNaSales(),
+            payload.getEuSales(),
+            payload.getJpSales(),
+            payload.getOtherSales(),
+            payload.getGlobalSales()
+        );
+
+        return createdGame;
+    }
+
+    @GetMappign("api/videogame/{id}")
+    public ResponseEntity<VideoGame> searchbyID(@PathVariable Long id){
+        VideoGame game = videoGameRepository.findById(id).orElse(null);
+
+        if(game == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(game);
     }
 
 }

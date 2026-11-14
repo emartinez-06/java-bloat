@@ -24,7 +24,7 @@ public class VideoGame {
     @Size(max = 50)
     @NotBlank(message = "Platform is required")
     private String platform;
-    @Min(1900) @Max(2050)
+    @Min(1950) @Max(2026)
     @NotNull(message = "Release Year is required")
     private Integer releaseYear;
     @NotBlank(message = "Genre is required")
@@ -46,7 +46,6 @@ public class VideoGame {
     @NotNull(message = "Other Sales is required")
     private Double otherSales;
     @PositiveOrZero
-    @NotNull(message = "Global Sales is required")
     private Double globalSales;
 
     // no-argument constructor is required for JPA
@@ -66,7 +65,7 @@ public class VideoGame {
         this.euSales = euSales;
         this.jpSales = jpSales;
         this.otherSales = otherSales;
-        this.globalSales = globalSales;
+        this.globalSales = naSales + euSales + jpSales + otherSales;
     }
 
     public Long getId() {

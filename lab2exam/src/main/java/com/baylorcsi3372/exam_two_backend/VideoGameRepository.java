@@ -12,5 +12,7 @@ public interface VideoGameRepository extends JpaRepository<VideoGame, Long> {
 
     List<VideoGame> findByNameContainingIgnoreCase(String name);
 
+    VideoGame findById(Long id);
+
     public record ConciseGame(Long id, String name) {}
 }
